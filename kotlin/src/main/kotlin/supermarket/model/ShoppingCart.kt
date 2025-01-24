@@ -17,11 +17,6 @@ class ShoppingCart {
         this.addItemQuantity(product, 1.0)
     }
 
-    internal fun productQuantities(): Map<Product, Double> {
-        return productQuantities
-    }
-
-
     fun addItemQuantity(product: Product, quantity: Double) {
         items.add(ProductQuantity(product, quantity))
         if (productQuantities.containsKey(product)) {
@@ -32,48 +27,50 @@ class ShoppingCart {
     }
 
     internal fun handleOffers(receipt: Receipt, offers: Map<Product, Offer>, catalog: SupermarketCatalog) {
-        for (p in productQuantities().keys) {
-            val quantity = productQuantities[p]!!
-            if (offers.containsKey(p)) {
-                val offer = offers[p]!!
-                val unitPrice = catalog.getUnitPrice(p)
-                val quantityAsInt = quantity.toInt()
-                var discount: Discount? = null
-                var x = 1
-                if (offer.offerType === SpecialOfferType.ThreeForTwo) {
-                    x = 3
-
-                } else if (offer.offerType === SpecialOfferType.TwoForAmount) {
-                    x = 2
-                    if (quantityAsInt >= 2) {
-                        val total = offer.argument * (quantityAsInt / x) + quantityAsInt % 2 * unitPrice
-                        val discountN = unitPrice * quantity - total
-                        discount = Discount(p, "2 for " + offer.argument, discountN)
-                    }
-
+        for (product in productQuantities.keys) {
+            val quantity: Double = productQuantities[product] ?: 0.0
+            if (!offers.containsKey(product)) continue
+            val offer = offers[product]!!
+            val unitPrice = catalog.getUnitPrice(product)
+            val quantityAsInt = quantity.toInt()
+            val numberOfXs = quantityAsInt / offer.offerType.faktor
+            val discount = when {
+                offer.offerType === SpecialOfferType.TwoForAmount && quantityAsInt >= 2 -> {
+                    val total =
+                        offer.unitPrice * (quantityAsInt / offer.offerType.faktor) + quantityAsInt % offer.offerType.faktor * unitPrice
+                    val discountN = unitPrice * quantity - total
+                    Discount(product, "2 for " + offer.unitPrice, discountN)
                 }
-                if (offer.offerType === SpecialOfferType.FiveForAmount) {
-                    x = 5
-                }
-                val numberOfXs = quantityAsInt / x
-                if (offer.offerType === SpecialOfferType.ThreeForTwo && quantityAsInt > 2) {
+
+                offer.offerType === SpecialOfferType.ThreeForTwo && quantityAsInt > 2 -> {
                     val discountAmount =
                         quantity * unitPrice - (numberOfXs.toDouble() * 2.0 * unitPrice + quantityAsInt % 3 * unitPrice)
-                    discount = Discount(p, "3 for 2", discountAmount)
+                    Discount(product, "3 for 2", discountAmount)
                 }
-                if (offer.offerType === SpecialOfferType.TenPercentDiscount) {
-                    discount =
-                        Discount(p, offer.argument.toString() + "% off", quantity * unitPrice * offer.argument / 100.0)
+
+                offer.offerType === SpecialOfferType.TenPercentDiscount -> {
+                    Discount(
+                        product,
+                        offer.percent.toString() + "% off",
+                        quantity * unitPrice * offer.percent / 100.0
+                    )
                 }
-                if (offer.offerType === SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
+
+                offer.offerType === SpecialOfferType.FiveForAmount && quantityAsInt >= 5 -> {
                     val discountTotal =
-                        unitPrice * quantity - (offer.argument * numberOfXs + quantityAsInt % 5 * unitPrice)
-                    discount = Discount(p, x.toString() + " for " + offer.argument, discountTotal)
+                        unitPrice * quantity - (offer.unitPrice * numberOfXs + quantityAsInt % 5 * unitPrice)
+                    Discount(product, offer.offerType.faktor.toString() + " for " + offer.unitPrice, discountTotal)
                 }
-                if (discount != null)
-                    receipt.addDiscount(discount)
+
+                else -> {
+                    null
+                }
             }
 
+            if (discount != null)
+                receipt.addDiscount(discount)
         }
     }
+
+
 }
