@@ -1,3 +1,8 @@
 package supermarket.model
 
-class Offer(internal var offerType: SpecialOfferType, internal val product: Product, internal var argument: Double)
+data class Offer(
+     val offerType: SpecialOfferType,
+     val product: Product,
+     val unitPrice: Double = 0.0,
+     val percent: Double = 0.0
+)

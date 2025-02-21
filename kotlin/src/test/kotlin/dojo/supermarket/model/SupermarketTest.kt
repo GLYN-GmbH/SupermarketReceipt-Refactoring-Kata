@@ -58,7 +58,11 @@ class SupermarketTest {
         theCart.addItem(toothbrush)
         theCart.addItem(toothbrush)
         theCart.addItem(toothbrush)
-        teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, catalog.getUnitPrice(toothbrush))
+        teller.addSpecialOffer(
+            offerType = SpecialOfferType.ThreeForTwo,
+            product = toothbrush,
+            unitPrice = catalog.getUnitPrice(toothbrush)
+        )
         val receipt = teller.checksOutArticlesFrom(theCart)
         Approvals.verify(ReceiptPrinter(40).printReceipt(receipt))
     }
@@ -70,7 +74,11 @@ class SupermarketTest {
         theCart.addItem(toothbrush)
         theCart.addItem(toothbrush)
         theCart.addItem(toothbrush)
-        teller.addSpecialOffer(SpecialOfferType.ThreeForTwo, toothbrush, catalog.getUnitPrice(toothbrush))
+        teller.addSpecialOffer(
+            offerType = SpecialOfferType.ThreeForTwo,
+            product = toothbrush,
+            unitPrice = catalog.getUnitPrice(toothbrush)
+        )
         val receipt = teller.checksOutArticlesFrom(theCart)
         Approvals.verify(ReceiptPrinter(40).printReceipt(receipt))
     }
@@ -85,7 +93,11 @@ class SupermarketTest {
     @Test
     fun percent_discount() {
         theCart.addItem(rice)
-        teller.addSpecialOffer(SpecialOfferType.TenPercentDiscount, rice, 10.0)
+        teller.addSpecialOffer(
+            offerType = SpecialOfferType.TenPercentDiscount,
+            product = rice,
+            percent = 10.0
+        )
         val receipt = teller.checksOutArticlesFrom(theCart)
         Approvals.verify(ReceiptPrinter(40).printReceipt(receipt))
     }
@@ -94,7 +106,7 @@ class SupermarketTest {
     fun xForY_discount() {
         theCart.addItem(cherryTomatoes)
         theCart.addItem(cherryTomatoes)
-        teller.addSpecialOffer(SpecialOfferType.TwoForAmount, cherryTomatoes, .99)
+        teller.addSpecialOffer(offerType = SpecialOfferType.TwoForAmount, product = cherryTomatoes, unitPrice = .99)
         val receipt = teller.checksOutArticlesFrom(theCart)
         Approvals.verify(ReceiptPrinter(40).printReceipt(receipt))
     }
@@ -102,7 +114,7 @@ class SupermarketTest {
     @Test
     fun FiveForY_discount() {
         theCart.addItemQuantity(apples, 5.0)
-        teller.addSpecialOffer(SpecialOfferType.FiveForAmount, apples, 6.99)
+        teller.addSpecialOffer(offerType = SpecialOfferType.FiveForAmount, product = apples, unitPrice = 6.99)
         val receipt = teller.checksOutArticlesFrom(theCart)
         Approvals.verify(ReceiptPrinter(40).printReceipt(receipt))
     }
@@ -110,7 +122,7 @@ class SupermarketTest {
     @Test
     fun FiveForY_discount_withSix() {
         theCart.addItemQuantity(apples, 6.0)
-        teller.addSpecialOffer(SpecialOfferType.FiveForAmount, apples, 6.99)
+        teller.addSpecialOffer(offerType = SpecialOfferType.FiveForAmount, product = apples, unitPrice = 6.99)
         val receipt = teller.checksOutArticlesFrom(theCart)
         Approvals.verify(ReceiptPrinter(40).printReceipt(receipt))
     }
