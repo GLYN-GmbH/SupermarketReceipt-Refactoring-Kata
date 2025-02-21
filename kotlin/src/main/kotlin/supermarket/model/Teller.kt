@@ -6,13 +6,8 @@ import java.util.HashMap
 class Teller(private val catalog: SupermarketCatalog) {
     private val offers = HashMap<Product, Offer>()
 
-    fun addSpecialOffer(offerType: SpecialOfferType, product: Product, unitPrice: Double=0.0, percent: Double = 0.0) {
-        this.offers[product] = Offer(
-            offerType = offerType,
-            product = product,
-            unitPrice = unitPrice,
-            percent = percent
-        )
+    fun addSpecialOffer(offerType: SpecialOfferType, product: Product, argument: Double) {
+        this.offers[product] = Offer(offerType, product, argument)
     }
 
     fun checksOutArticlesFrom(theCart: ShoppingCart): Receipt {

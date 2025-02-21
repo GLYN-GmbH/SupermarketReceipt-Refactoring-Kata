@@ -13,7 +13,7 @@ class FakeCatalog : SupermarketCatalog {
         this.prices[product.name] = price
     }
 
-    override fun getUnitPrice(p: Product): Double {
-        return this.prices[p.name]!!
+    override fun getUnitPrice(product: Product): Double {
+        return this.prices[product.name]!!
     }
 }
