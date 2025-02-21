@@ -6,20 +6,11 @@ class Receipt {
     private val items = ArrayList<ReceiptItem>()
     private val discounts = ArrayList<Discount>()
 
-    val totalPrice: Double?
-        get() {
-            var total = 0.0
-            for (item in this.items) {
-                total += item.totalPrice
-            }
-            for (discount in this.discounts) {
-                total -= discount.discountAmount
-            }
-            return total
-        }
+    val totalPrice: Double
+        get() = items.sumByDouble { it.totalPrice } - discounts.sumByDouble { it.discountAmount }
 
-    fun addProduct(p: Product, quantity: Double, price: Double, totalPrice: Double) {
-        this.items.add(ReceiptItem(p, quantity, price, totalPrice))
+    fun addProduct(product: Product, quantity: Double, price: Double, totalPrice: Double) {
+        this.items.add(ReceiptItem(product, quantity, price, totalPrice))
     }
 
     fun getItems(): List<ReceiptItem> {
