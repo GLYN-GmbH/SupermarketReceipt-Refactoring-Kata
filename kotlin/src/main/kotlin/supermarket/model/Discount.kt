@@ -3,17 +3,14 @@ package supermarket.model
 import supermarket.toUKFormat
 
 data class Discount(val product: Product, val description: String, val discountAmount: Double) {
-    fun getLineOutput(columnWidth: Int):String {
+    fun getLineOutput(columnWidth: Int): String {
         val productPresentation = product.name
         val pricePresentation = discountAmount.toUKFormat()
 
-        val columnLengthList = listOf(productPresentation.length, description.length, pricePresentation.length)
-        return "$description($productPresentation)${" ".repeat(getWidthCalculation(columnWidth, columnLengthList))}-$pricePresentation\n"
+        val columnLengthList = listOf(3, productPresentation.length, description.length, pricePresentation.length)
+        val whitespaceSize = columnWidth - columnLengthList.sum()
+        return "$description($productPresentation)${" ".repeat(whitespaceSize)}-$pricePresentation"
     }
 
 
-    private fun getWidthCalculation(
-        columnWidth: Int,
-        columnLengthList: List<Int>
-    ) = columnWidth - 3 - columnLengthList.sum()
 }

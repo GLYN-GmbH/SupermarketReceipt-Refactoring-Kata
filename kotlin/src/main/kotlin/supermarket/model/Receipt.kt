@@ -1,7 +1,6 @@
 package supermarket.model
 
 import supermarket.toUKFormat
-import java.util.*
 
 class Receipt {
     private val items = ArrayList<ReceiptItem>()
@@ -26,10 +25,22 @@ class Receipt {
         return discounts
     }
 
-    fun getTotalLineOutput(columnWidth: Int) : String {
+    fun getTotalLineOutput(columnWidth: Int): String {
         val pricePresentation = totalPrice.toUKFormat()
         val total = "Total: "
-        val whitespace = " ".repeat(columnWidth - total.length - pricePresentation.length -2)
+        val whitespace = " ".repeat(columnWidth - total.length - pricePresentation.length - 2)
         return "$total $whitespace $pricePresentation"
     }
+
+    fun print(columnWidth: Int): String =
+        buildString {
+            getItems().forEach {
+                appendln(it.getLineOutput(columnWidth))
+            }
+            getDiscounts().forEach {
+                appendln(it.getLineOutput(columnWidth))
+            }
+            appendln()
+            append(getTotalLineOutput(columnWidth))
+        }
 }
