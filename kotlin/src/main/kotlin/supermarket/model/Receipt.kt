@@ -1,5 +1,6 @@
 package supermarket.model
 
+import supermarket.toUKFormat
 import java.util.*
 
 class Receipt {
@@ -23,5 +24,12 @@ class Receipt {
 
     fun getDiscounts(): List<Discount> {
         return discounts
+    }
+
+    fun getTotalLineOutput(columnWidth: Int) : String {
+        val pricePresentation = totalPrice.toUKFormat()
+        val total = "Total: "
+        val whitespace = " ".repeat(columnWidth - total.length - pricePresentation.length -2)
+        return "$total $whitespace $pricePresentation"
     }
 }
